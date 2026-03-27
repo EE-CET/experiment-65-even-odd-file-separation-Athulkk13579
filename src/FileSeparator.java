@@ -1,45 +1,60 @@
-import java.io.BufferedReader;
+
 import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.FileNotFoundException;
+import java.io.PrintWriter;
 import java.util.Scanner;
 
-public class EvenOddFileSeparation {
+public class FileSeparator {
     public static void main(String[] args) {
-        try (Scanner scanner = new Scanner(new File("numbers.txt"));
-             FileWriter evenWriter = new FileWriter("even.txt");
-             FileWriter oddWriter = new FileWriter("odd.txt")) {
 
-            while (scanner.hasNextInt()) {
-                int num = scanner.nextInt();
-                if (num % 2 == 0) {
-                    evenWriter.write(num + " ");
+        try {
+            Scanner sc = new Scanner(new File("numbers.txt"));
+            PrintWriter evenWriter = new PrintWriter("even.txt");
+            PrintWriter oddWriter = new PrintWriter("odd.txt");
+
+            while (sc.hasNextInt()) {
+                int number = sc.nextInt();
+
+                if (number % 2 == 0) {
+                    evenWriter.print(number + " ");
                 } else {
-                    oddWriter.write(num + " ");
+                    oddWriter.print(number + " ");
                 }
             }
-        } catch (IOException e) {
-            System.out.println(e.getMessage());
+
+            sc.close();
+            evenWriter.close();
+            oddWriter.close();
+
+        } catch (FileNotFoundException e) {
+            System.out.println("Error processing files.");
             return;
         }
 
+        // Step 2: Read and display even.txt
         System.out.print("Even File: ");
-        printFileContent("even.txt");
-        
-        System.out.print("Odd File: ");
-        printFileContent("odd.txt");
-    }
-
-    private static void printFileContent(String fileName) {
-        try (BufferedReader br = new BufferedReader(new FileReader(fileName))) {
-            String line;
-            while ((line = br.readLine()) != null) {
-                System.out.print(line);
+        try {
+            Scanner evenReader = new Scanner(new File("even.txt"));
+            while (evenReader.hasNext()) {
+                System.out.print(evenReader.next() + " ");
             }
-            System.out.println();
-        } catch (IOException e) {
-            System.out.println(e.getMessage());
+            evenReader.close();
+        } catch (FileNotFoundException e) {
+            System.out.println("Error reading even file.");
         }
+        System.out.println();
+
+        // Step 3: Read and display odd.txt
+        System.out.print("Odd File: ");
+        try {
+            Scanner oddReader = new Scanner(new File("odd.txt"));
+            while (oddReader.hasNext()) {
+                System.out.print(oddReader.next() + " ");
+            }
+            oddReader.close();
+        } catch (FileNotFoundException e) {
+            System.out.println("Error reading odd file.");
+        }
+        System.out.println();
     }
 }
